@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="ProjectModuleManager">
+    <modules>
+      <module fileurl="file://$PROJECT_DIR$/bipay-api/bipay-api.iml" filepath="$PROJECT_DIR$/bipay-api/bipay-api.iml" />
+      <module fileurl="file://$PROJECT_DIR$/bipay-core/bipay-core.iml" filepath="$PROJECT_DIR$/bipay-core/bipay-core.iml" />
+      <module fileurl="file://$PROJECT_DIR$/bipay-sdk.iml" filepath="$PROJECT_DIR$/bipay-sdk.iml" />
+    </modules>
+  </component>
+</project>
