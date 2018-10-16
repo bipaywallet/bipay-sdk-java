@@ -14,9 +14,7 @@ public class SignUtil {
 
     public static String sign(String key,String timestamp,String nonce,String body) throws Exception {
         String raw = body + key + nonce + timestamp;
-        System.out.println("raw:"+raw);
         String sign = DigestUtils.md5Hex(raw).toLowerCase();
-        System.out.println("sign:"+sign);
         return sign;
     }
 

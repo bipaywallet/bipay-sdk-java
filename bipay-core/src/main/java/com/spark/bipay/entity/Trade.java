@@ -20,12 +20,9 @@ public class Trade {
     private int tradeType ;
     //交易状态 0-待审核 1-成功 2-失败,充值无审核
     private int status ;
-    //交易手续费
-    private BigDecimal poundage ;
     //旷工费
     private BigDecimal fee ;
-    //1审核回调 2交易回调
-    private int flag ;
+    private int decimals;
     //提币申请单号
     private String businessId ;
 

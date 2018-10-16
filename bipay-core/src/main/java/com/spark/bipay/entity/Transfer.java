@@ -5,7 +5,7 @@ import lombok.Data;
 import java.math.BigDecimal;
 
 @Data
-public class TransferEntity {
+public class Transfer {
 
     //商户号
     private String merchantId ;

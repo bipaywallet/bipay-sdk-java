@@ -5,6 +5,8 @@ import com.alibaba.fastjson.JSONObject;
 import com.spark.bipay.constant.API;
 import com.spark.bipay.constant.CoinType;
 import com.spark.bipay.entity.Address;
+import com.spark.bipay.entity.Transaction;
+import com.spark.bipay.entity.Transfer;
 import com.spark.bipay.http.ResponseMessage;
 import com.spark.bipay.utils.HttpUtil;
 import lombok.Data;
@@ -22,6 +24,7 @@ import org.apache.http.impl.cookie.BasicClientCookie;
 import org.apache.http.util.EntityUtils;
 
 import java.io.IOException;
+import java.math.BigDecimal;
 import java.nio.charset.Charset;
 import java.util.List;
 import java.util.Map;
@@ -29,7 +32,7 @@ import java.util.Map;
 @Slf4j
 @Data
 public class BiPayClient implements Client<String> {
-    private String host;
+    private String gateway;
     private static String CONNECTION_EXCEPTION = "connect exception" ;
     private static String ENCODE_TYPE = "UTF-8";
     private static String CONTENT_TYPE_VALUE = "application/json";
@@ -39,38 +42,46 @@ public class BiPayClient implements Client<String> {
     private Boolean redirectEnabled = true;
 
     private String merchantId ;
-    private String key;
+    private String merchantKey;
 
     public static final CookieStore cookieStore = new BasicCookieStore();
 
     public RequestConfig requestConfig ;
 
-    public BiPayClient(String host,String merchantId,String key){
+    public BiPayClient(){
         RequestConfig requestConfig = RequestConfig.custom()
                 .setConnectTimeout(connectTimeout)
                 .setConnectionRequestTimeout(requestTimeout)
                 .setRedirectsEnabled(redirectEnabled).build();
-        this.host = host;
+        this.requestConfig = requestConfig ;
+    }
+
+    public BiPayClient(String gateway,String merchantId,String key){
+        RequestConfig requestConfig = RequestConfig.custom()
+                .setConnectTimeout(connectTimeout)
+                .setConnectionRequestTimeout(requestTimeout)
+                .setRedirectsEnabled(redirectEnabled).build();
+        this.gateway = gateway;
         this.merchantId = merchantId;
-        this.key = key ;
+        this.merchantKey = key ;
         this.requestConfig = requestConfig ;
     }
 
     public BiPayClient(String host,String merchantId,String key,RequestConfig requestConfig){
-        this.host = host;
+        this.gateway = host;
         this.merchantId = merchantId;
-        this.key = key ;
+        this.merchantKey = key ;
         this.requestConfig = requestConfig ;
     }
 
-    public ResponseMessage<Address> requestCoinAddress(CoinType coinType,String callbackUrl) throws Exception {
+    public ResponseMessage<Address> createCoinAddress(CoinType coinType, String callbackUrl) throws Exception {
         JSONArray body = new JSONArray();
         JSONObject item = new JSONObject();
         item.put("merchantId",this.merchantId);
         item.put("coinType",coinType.getCode());
         item.put("callUrl",callbackUrl);
         body.add(item);
-        Map<String,String> map = HttpUtil.wrapperParams(this.key,body.toJSONString());
+        Map<String,String> map = HttpUtil.wrapperParams(this.merchantKey,body.toJSONString());
         ResponseMessage<String> response = post(API.CREATE_ADDRESS,map);
         ResponseMessage<Address> result = new ResponseMessage<>(response.getCode(),response.getMessage());
         if(result.getCode() == ResponseMessage.SUCCESS_CODE){
@@ -79,9 +90,34 @@ public class BiPayClient implements Client<String> {
         return result;
     }
 
+    public ResponseMessage<String>  transfer(String orderId, BigDecimal amount,CoinType coinType,String address,String callbackUrl) throws Exception {
+        Transfer transfer = new Transfer();
+        transfer.setAddress(address);
+        transfer.setCoinType(coinType.getCode());
+        transfer.setBusinessId(orderId);
+        transfer.setMerchantId(merchantId);
+        transfer.setAmount(amount);
+        transfer.setCallUrl(callbackUrl);
+        JSONArray body = new JSONArray();
+        body.add(transfer);
+        Map<String,String> map = HttpUtil.wrapperParams(this.merchantKey,body.toJSONString());
+        ResponseMessage<String> response = post(API.WITHDRAW,map);
+        return response;
+    }
+
+    public List<Transaction> queryTransaction() throws Exception {
+        JSONArray body = new JSONArray();
+        Map<String,String> map = HttpUtil.wrapperParams(this.merchantKey,"{}");
+        ResponseMessage<String> response = post(API.TRANSACTION,map);
+
+        List<Transaction> trades = JSONObject.parseArray(response.getData(),Transaction.class);
+        return trades;
+    }
+
+
     public ResponseMessage<String> post(String url, Map<String,String> map) {
         CloseableHttpClient httpCilent= HttpClients.custom().setDefaultCookieStore(cookieStore).build();
-        HttpPost httpPost = new HttpPost(host + url);
+        HttpPost httpPost = new HttpPost(gateway + url);
         httpPost.setConfig(requestConfig);
         HttpResponse httpResponse= null ;
         try {
@@ -94,9 +130,10 @@ public class BiPayClient implements Client<String> {
             String strResult ;
             ResponseMessage<String> response ;
             if (httpResponse != null) {
-                log.error("httpResponse:{}",httpResponse.getStatusLine().toString());
+                log.info("httpResponse:{}",httpResponse.getStatusLine().toString());
                 if (httpResponse.getStatusLine().getStatusCode() == 200) {
                     strResult = EntityUtils.toString(httpResponse.getEntity());
+                    System.out.println(strResult);
                     log.debug("strResult:,{}",strResult);
                     JSONObject json = JSONObject.parseObject(strResult);
                     response = ResponseMessage.success(json.getInteger("code"),json.getString("message"));
