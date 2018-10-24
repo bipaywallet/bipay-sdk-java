@@ -3,7 +3,6 @@ package com.spark.bipay.http.client;
 import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
 import com.spark.bipay.constant.API;
-import com.spark.bipay.constant.CoinType;
 import com.spark.bipay.entity.Address;
 import com.spark.bipay.entity.Transaction;
 import com.spark.bipay.entity.Transfer;
@@ -74,11 +73,11 @@ public class BiPayClient implements Client<String> {
         this.requestConfig = requestConfig ;
     }
 
-    public ResponseMessage<Address> createCoinAddress(CoinType coinType, String callbackUrl) throws Exception {
+    public ResponseMessage<Address> createCoinAddress(String mainCoinType, String callbackUrl) throws Exception {
         JSONArray body = new JSONArray();
         JSONObject item = new JSONObject();
         item.put("merchantId",this.merchantId);
-        item.put("coinType",coinType.getCode());
+        item.put("coinType",mainCoinType);
         item.put("callUrl",callbackUrl);
         body.add(item);
         Map<String,String> map = HttpUtil.wrapperParams(this.merchantKey,body.toJSONString());
@@ -90,10 +89,11 @@ public class BiPayClient implements Client<String> {
         return result;
     }
 
-    public ResponseMessage<String>  transfer(String orderId, BigDecimal amount,CoinType coinType,String address,String callbackUrl) throws Exception {
+    public ResponseMessage<String>  transfer(String orderId, BigDecimal amount,String mainCoinType,String subCoinType,String address,String callbackUrl) throws Exception {
         Transfer transfer = new Transfer();
         transfer.setAddress(address);
-        transfer.setCoinType(coinType.getCode());
+        transfer.setMainCoinType(mainCoinType);
+        transfer.setCoinType(subCoinType);
         transfer.setBusinessId(orderId);
         transfer.setMerchantId(merchantId);
         transfer.setAmount(amount);
@@ -101,6 +101,7 @@ public class BiPayClient implements Client<String> {
         JSONArray body = new JSONArray();
         body.add(transfer);
         Map<String,String> map = HttpUtil.wrapperParams(this.merchantKey,body.toJSONString());
+        System.out.println(map);
         ResponseMessage<String> response = post(API.WITHDRAW,map);
         return response;
     }

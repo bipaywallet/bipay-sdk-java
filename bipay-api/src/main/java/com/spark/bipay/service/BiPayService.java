@@ -18,6 +18,12 @@ public class BiPayService {
     private BiPayClient biPayClient;
     @Value("${server.host}")
     private String host;
+    @Value("#{'${bipay.supported-coins}'.split(',')}")
+    private List<String> supportedCoins;
+
+    public boolean isSupportedCoin(String coinName){
+        return  supportedCoins!=null && supportedCoins.contains(coinName);
+    }
 
     /**
      * 创建币种地址
@@ -27,7 +33,7 @@ public class BiPayService {
     public Address createCoinAddress(CoinType coinType){
         String callbackUrl = host + "/bipay/notify";
         try {
-            ResponseMessage<Address> resp =  biPayClient.createCoinAddress(coinType, callbackUrl);
+            ResponseMessage<Address> resp =  biPayClient.createCoinAddress(coinType.getCode(), callbackUrl);
             return  resp.getData();
         }
         catch (Exception e){
@@ -37,10 +43,10 @@ public class BiPayService {
     }
 
 
-    public ResponseMessage<String> transfer(String orderId, BigDecimal amount,CoinType coinType,String address){
+    public ResponseMessage<String> transfer(String orderId, BigDecimal amount,CoinType coinType,String subCoinType,String address){
         String callbackUrl = host + "/bipay/notify";
         try {
-            ResponseMessage<String> resp =  biPayClient.transfer(orderId,amount,coinType,address,callbackUrl);
+            ResponseMessage<String> resp =  biPayClient.transfer(orderId,amount,coinType.getCode(),subCoinType,address,callbackUrl);
             return resp;
         }
         catch (Exception e){

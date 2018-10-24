@@ -1,33 +1,37 @@
 package com.spark.bipay.constant;
 
 public enum CoinType {
-    BTC(0,"BTC","Bitcoin"),
-    ETH(60,"ETH","Ethereum"),
-    DVC(206,"DVC","DevCoin"),
-    USDT(207,"USDT","USDT"),
-    CTGC(60000010,"CTGC","CTGC"),
-    GIP(60000011,"GIP","GIP");
+    Bitcoin("0","BTC"),
+    Litecoin("2","LTC"),
+    Dogecoin("3","DOGE"),
+    Ethereum("60","ETH"),
+    EthereumClassic("61","ETC"),
+    Ripple("144","XRP"),
+    BitcoinCash("145","BCH"),
+    EOS("195","EOS"),
+    TRX("196","TRX"),
+    NEO("888","NEO");
 
-    private int code;
+    private String code;
     private String unit;
-    private String name;
 
-    CoinType(int code,String unit,String name){
+    CoinType(String code, String unit){
         this.code=code;
+        this.unit=unit;
     }
 
-    public int getCode(){
+    public String getCode(){
         return this.code;
+    }
+
+    public String getUnit(){
+        return this.unit;
     }
 
     public static CoinType codeOf(int code){
         switch (code){
-            case 0: return BTC;
-            case 60: return ETH;
-            case 206: return DVC;
-            case 207: return USDT;
-            case 60000010: return CTGC;
-            case 60000011: return GIP;
+            case 0: return Bitcoin;
+            case 60: return Ethereum;
         }
         return null;
     }

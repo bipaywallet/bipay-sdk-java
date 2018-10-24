@@ -39,7 +39,8 @@ public class RequestController {
     @RequestMapping("/bipay/transfer")
     public ResponseMessage<String> transfer(int coinType,BigDecimal amount,String address){
         String orderId = String.valueOf(Calendar.getInstance().getTimeInMillis());
-        ResponseMessage<String> resp = biPayService.transfer(orderId, amount,CoinType.codeOf(coinType),address);
+        CoinType coin = CoinType.codeOf(coinType);
+        ResponseMessage<String> resp = biPayService.transfer(orderId, amount,coin,coin.getCode(),address);
         return resp;
     }
 

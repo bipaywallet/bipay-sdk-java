@@ -12,7 +12,9 @@ public class Transfer {
     //转账地址
     private String address ;
     //币种类型
-    private int coinType ;
+    private String mainCoinType ;
+    //子币种类型
+    private String coinType;
     //转账数量
     private BigDecimal amount ;
     //转账回调地址

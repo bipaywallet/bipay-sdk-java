@@ -1,5 +1,6 @@
 package com.spark.bipay.entity;
 
+import com.spark.bipay.constant.CoinType;
 import lombok.Data;
 
 import java.math.BigDecimal;
@@ -13,7 +14,9 @@ public class Trade {
     //交易地址
     private String address ;
     //币种类型
-    private String coinType ;
+    private String mainCoinType;
+    //代币类型，erc20为合约地址
+    private String coinType;
     //交易金额
     private BigDecimal amount ;
     //交易类型  1-充值 2-提款(转账)
@@ -26,4 +29,13 @@ public class Trade {
     //提币申请单号
     private String businessId ;
 
+    public boolean isErcToken(){
+        return !this.mainCoinType.equalsIgnoreCase(this.coinType) &&
+                this.mainCoinType.equalsIgnoreCase(CoinType.Ethereum.getCode());
+    }
+
+    public boolean isUsdt(){
+        return this.mainCoinType.equalsIgnoreCase(CoinType.Bitcoin.getCode())
+                && this.coinType.equalsIgnoreCase("31");
+    }
 }

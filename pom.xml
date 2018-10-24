@@ -34,4 +34,11 @@
     <dependencies>
         
     </dependencies>
+    <distributionManagement>
+        <repository>
+            <id>spark-release</id>
+            <name>Internal Releases</name>
+            <url>http://maven.xinhuokj.com/repository/maven-releases/</url>
+        </repository>
+    </distributionManagement>
 </project>

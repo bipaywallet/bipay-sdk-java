@@ -43,14 +43,15 @@ public class CallbackController {
         //TODO 业务处理
         if(trade.getTradeType() == 1){
             logger.info("=====收到充币通知======");
-            logger.info("address:{},amount:{},coinType:{},fee:{}",trade.getAddress(),trade.getAmount(),trade.getCoinType(),trade.getFee());
+            logger.info("address:{},amount:{},mainCoinType:{},fee:{}",trade.getAddress(),trade.getAmount(),trade.getMainCoinType(),trade.getFee());
             //金额为最小单位，需要转换,包括amount和fee字段
             BigDecimal amount = trade.getAmount().divide(BigDecimal.TEN.pow(trade.getDecimals()),8, RoundingMode.DOWN);
             BigDecimal fee = trade.getFee().divide(BigDecimal.TEN.pow(trade.getDecimals()),8, RoundingMode.DOWN);
+            logger.info("amount={},fee={}",amount.toPlainString(),fee.toPlainString());
         }
         else if(trade.getTradeType() == 2){
             logger.info("=====收到提币处理通知=====");
-            logger.info("address:{},amount:{},coinType:{},businessId:{}",trade.getAddress(),trade.getAmount(),trade.getCoinType(),trade.getBusinessId());
+            logger.info("address:{},amount:{},mainCoinType:{},businessId:{}",trade.getAddress(),trade.getAmount(),trade.getMainCoinType(),trade.getBusinessId());
             if(trade.getStatus() == 1){
                 logger.info("审核通过，转账中");
                 //TODO: 提币交易已发出，理提币订单状态，扣除提币资金

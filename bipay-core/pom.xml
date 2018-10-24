@@ -48,4 +48,11 @@
             <version>1.2</version>
         </dependency>
     </dependencies>
+    <distributionManagement>
+        <repository>
+            <id>spark-snapshots</id>
+            <name>spark repository</name>
+            <url>http://maven.xinhuokj.com/repository/maven-public/</url>
+        </repository>
+    </distributionManagement>
 </project>
