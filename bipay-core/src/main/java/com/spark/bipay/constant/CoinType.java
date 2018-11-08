@@ -7,7 +7,7 @@ public enum CoinType {
     Ethereum("60","ETH"),
     EthereumClassic("61","ETC"),
     Ripple("144","XRP"),
-    BitcoinCash("145","BCH"),
+    Bitcoincash("145","BCH"),
     EOS("195","EOS"),
     TRX("196","TRX"),
     NEO("888","NEO");
