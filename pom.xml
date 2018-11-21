@@ -38,12 +38,12 @@
 		<repository>
 			<id>spark-release</id>
 			<name>spark-release-respository</name>
-			<url>http://www.hawk.com:8888/repository/maven-releases/</url>
+			<url>http://maven.xinhuokj.com/repository/maven-releases/</url>
 		</repository>
 		<snapshotRepository>
 			<id>spark-snapshots</id>
 			<name>spark-snapshots-respository</name>
-			<url>http://www.hawk.com:8888/repository/maven-snapshots/</url>
+			<url>http://maven.xinhuokj.com/repository/maven-snapshots/</url>
 		</snapshotRepository>
 	</distributionManagement>
 </project>

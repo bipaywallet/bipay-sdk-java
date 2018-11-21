@@ -31,7 +31,15 @@ public enum CoinType {
     public static CoinType codeOf(int code){
         switch (code){
             case 0: return Bitcoin;
+            case 2: return Litecoin;
+            case 3: return Dogecoin;
             case 60: return Ethereum;
+            case 61: return EthereumClassic;
+            case 144: return Ripple;
+            case 145:return Bitcoincash;
+            case 195: return EOS;
+            case 196: return TRX;
+            case 888: return NEO;
         }
         return null;
     }
